@@ -1,2 +1,2 @@
 PORT=8080
-DB_URL=postgres://localhost
+DB_URL=postgres://postgres:postgres@localhost:5432/go-restapi?sslmode=disable
