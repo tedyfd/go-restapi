@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+	"github.com/tedyfd/go-restapi/internal/database"
 
 	"github.com/joho/godotenv"
 
@@ -29,19 +31,19 @@ func main() {
 
 	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
-		log.Fatal("DB_URL is not found in the environment") 
+		log.Fatal("DB_URL is not found in the environment")
 	}
 
-	conn, err := sql.Open("postgres", dbUrl)
+	conn, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal("Can't connect to database:", err)
 	}
-	
+
 	apiCfg := apiConfig{
 		DB: database.New(conn),
 	}
 
-	// router := chi.NewRouter()
+	router := chi.NewRouter()
 
 	router.Use(cors.Handler(cors.Options{
 		// AllowedOrigins: []string{"http://localhost"}, // Use this to allow specific origin hosts
@@ -52,7 +54,7 @@ func main() {
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
 		MaxAge:           300,
-	}))``
+	}))
 
 	v1Router := chi.NewRouter()
 
@@ -69,7 +71,7 @@ func main() {
 	}
 
 	log.Printf("Server Run on port %v", portString)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
